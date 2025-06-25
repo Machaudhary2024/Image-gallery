@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Image Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="gallery-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <i class="fas fa-images"></i>
+                    Colorful Image Gallery
+                </h1>
+                <p class="subtitle">
+                    Explore our vibrant collection of stunning images across different categories
+                </p>
+                <button class="add-image-btn" id="addImageBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Your Image
+                </button>
+            </div>
+        </header>
+
+        <!-- Filter Controls -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <div class="filter-label">
+                    <i class="fas fa-filter"></i>
+                    <span>Filter by category:</span>
+                </div>
+                <div class="image-counter">
+                    <i class="fas fa-grid-3x3"></i>
+                    <span id="imageCount">9 images</span>
+                </div>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-th"></i>
+                    All
+                </button>
+                <button class="filter-btn" data-category="nature">
+                    <i class="fas fa-leaf"></i>
+                    Nature
+                </button>
+                <button class="filter-btn" data-category="urban">
+                    <i class="fas fa-city"></i>
+                    Urban
+                </button>
+                <button class="filter-btn" data-category="art">
+                    <i class="fas fa-palette"></i>
+                    Art
+                </button>
+            </div>
+        </div>
+
+        <!-- Image Grid -->
+        <div class="image-grid" id="imageGrid">
+            <!-- Images will be dynamically inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-images"></i>
+            <h3>No images found</h3>
+            <p>Try selecting a different category to see more images.</p>
+        </div>
+    </div>
+
+    <!-- Add Image Modal -->
+    <div class="modal" id="addImageModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-upload"></i>
+                    Add New Image
+                </h2>
+                <button class="modal-close" id="closeAddModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form class="add-image-form" id="addImageForm">
+                <div class="form-group">
+                    <label for="imageFile">
+                        <i class="fas fa-image"></i>
+                        Select Image File
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="imageFile" accept="image/*" required>
+                        <div class="file-input-display">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to select an image or drag & drop</span>
+                        </div>
+                    </div>
+                    <div class="image-preview" id="imagePreview" style="display: none;">
+                        <img id="previewImg" src="/placeholder.svg" alt="Preview">
+                        <button type="button" class="remove-preview" id="removePreview">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageTitle">
+                        <i class="fas fa-heading"></i>
+                        Image Title
+                    </label>
+                    <input type="text" id="imageTitle" placeholder="Enter a title for your image" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageCategory">
+                        <i class="fas fa-tags"></i>
+                        Category
+                    </label>
+                    <select id="imageCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="nature">
+                            <i class="fas fa-leaf"></i>
+                            Nature
+                        </option>
+                        <option value="urban">
+                            <i class="fas fa-city"></i>
+                            Urban
+                        </option>
+                        <option value="art">
+                            <i class="fas fa-palette"></i>
+                            Art
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageDescription">
+                        <i class="fas fa-align-left"></i>
+                        Description (Optional)
+                    </label>
+                    <textarea id="imageDescription" placeholder="Add a description for your image" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelAdd">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Image
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-overlay"></div>
+        
+        <!-- Close Button -->
+        <button class="lightbox-close" id="closeLightbox">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Delete Button (for user-added images) -->
+        <button class="lightbox-delete" id="deleteLightbox" style="display: none;">
+            <i class="fas fa-trash"></i>
+        </button>
+
+        <!-- Navigation Buttons -->
+        <button class="lightbox-nav lightbox-prev" id="prevImage">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <button class="lightbox-nav lightbox-next" id="nextImage">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <!-- Main Image Container -->
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="/placeholder.svg" alt="" />
+            <div class="lightbox-info">
+                <h3 id="lightboxTitle"></h3>
+                <span class="lightbox-category" id="lightboxCategory"></span>
+                <p class="lightbox-description" id="lightboxDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast" id="successToast">
+        <i class="fas fa-check-circle"></i>
+        <span>Image added successfully!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
